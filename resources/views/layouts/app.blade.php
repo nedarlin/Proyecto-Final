@@ -7,7 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="{{ asset('css/styles.css') }}" rel="stylesheet">
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
     <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
         <div class="container">
             <a class="navbar-brand fw-semibold" href="{{ route('inicio') }}">Odonto Sonrisas</a>
@@ -29,11 +29,11 @@
         </div>
     </nav>
 
-    <main>
+    <main class="flex-grow-1 d-flex flex-column">
         @yield('content')
     </main>
 
-    <footer class="border-top text-center text-muted py-4">
+    <footer class="border-top text-center text-muted py-3">
         <small>&copy; {{ date('Y') }} Odonto Sonrisas. Todos los derechos reservados.</small>
     </footer>
 
