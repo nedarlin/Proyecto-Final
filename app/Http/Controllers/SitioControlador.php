@@ -6,20 +6,25 @@ class SitioControlador extends Controller
 {
     public function inicio()
     {
-        return view('inicio');
-    }
-
-    public function catalogo()
-    {
-        if (!session()->has('paciente_id')) {
-            return redirect()->route('login');
-        }
         $servicios = [
-            ['nombre' => 'Evaluacion general', 'descripcion' => 'Examen clinico y diagnostico inicial del paciente.'],
-            ['nombre' => 'Ortodoncia', 'descripcion' => 'Brackets metalicos, esteticos o alineadores.'],
-            ['nombre' => 'Implantologia oral', 'descripcion' => 'Colocacion de implantes dentales.'],
-            ['nombre' => 'Cirugía dental', 'descripcion' => 'Extraccion de piezas retenidas y otras cirugias.'],
+            [
+                'nombre' => 'Evaluacion general',
+                'descripcion' => 'Examen clinico y diagnóstico inicial, con apoyo de tomografia 3D cuando se necesita.',
+            ],
+            [
+                'nombre' => 'Ortodoncia',
+                'descripcion' => 'Correccion de la posicion dental con brackets metalicos, esteticos o alineadores.',
+            ],
+            [
+                'nombre' => 'Implantologia oral',
+                'descripcion' => 'Colocacion de implantes dentales con indicaciones y cuidados postoperatorios.',
+            ],
+            [
+                'nombre' => 'Cirugía dental',
+                'descripcion' => 'Extraccion de piezas retenidas y otros procedimientos quirurgicos.',
+            ],
         ];
-        return view('catalogo', ['servicios' => $servicios]);
+
+        return view('inicio', ['servicios' => $servicios]);
     }
 }
