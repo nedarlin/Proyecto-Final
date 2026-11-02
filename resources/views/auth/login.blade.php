@@ -3,7 +3,7 @@
 @section('content')
 <div class="container flex-grow-1 d-flex align-items-center py-4">
     <div class="row justify-content-center w-100">
-        <div class="col-md-5">
+        <div class="col-12 col-sm-10 col-md-7 col-lg-5">
             <h2 class="text-center mb-4">Iniciar sesion</h2>
 
         @if (session('exito'))

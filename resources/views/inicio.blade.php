@@ -6,14 +6,16 @@
     <div class="container">
         <h1>Tu sonrisa, en buenas manos</h1>
         <p class="lead mt-3 mb-4">
-            Conoce nuestros servicios y reserva tu cita odontologica en linea.
+            Conoce nuestros servicios y reserva tu cita odontológica en línea.
         </p>
-        @if (session()->has('paciente_id'))
-            <a href="#servicios" class="btn btn-primary px-4">Ver servicios</a>
-        @else
-            <a href="{{ route('login') }}" class="btn btn-primary px-4">Reservar cita</a>
-            <a href="#servicios" class="btn btn-outline-secondary px-4">Ver servicios</a>
-        @endif
+        <div class="d-grid d-sm-flex justify-content-sm-center gap-2">
+            @if (session()->has('paciente_id'))
+                <a href="#servicios" class="btn btn-primary px-4">Ver servicios</a>
+            @else
+                <a href="{{ route('login') }}" class="btn btn-primary px-4">Reservar cita</a>
+                <a href="#servicios" class="btn btn-outline-secondary px-4">Ver servicios</a>
+            @endif
+        </div>
     </div>
 </section>
 

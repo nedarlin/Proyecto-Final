@@ -3,7 +3,7 @@
 @section('content')
 <div class="container flex-grow-1 d-flex align-items-center py-4">
     <div class="row justify-content-center w-100">
-        <div class="col-md-7">
+        <div class="col-12 col-md-9 col-lg-7">
             <h2 class="text-center mb-4">Crear cuenta</h2>
         <form method="POST" action="{{ route('registro.guardar') }}" class="card card-body shadow">
             @csrf
