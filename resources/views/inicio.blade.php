@@ -10,7 +10,8 @@
         </p>
         <div class="d-grid d-sm-flex justify-content-sm-center gap-2">
             @if (session()->has('paciente_id'))
-                <a href="#servicios" class="btn btn-primary px-4">Ver servicios</a>
+                <a href="{{ route('citas.agendar') }}" class="btn btn-primary px-4">Agendar cita</a>
+                <a href="#servicios" class="btn btn-outline-secondary px-4">Ver servicios</a>
             @else
                 <a href="{{ route('login') }}" class="btn btn-primary px-4">Reservar cita</a>
                 <a href="#servicios" class="btn btn-outline-secondary px-4">Ver servicios</a>
