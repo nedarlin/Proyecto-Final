@@ -106,10 +106,78 @@ class CitaControlador extends Controller
             Cita::create($campos);
         }
 
-        return redirect()->route('citas.agendar')->with(
+        return redirect()->route('citas.mis')->with(
             'exito',
             'Cita confirmada: ' . $servicio->nombre . ' con ' . $odontologo->nombres .
             ', el ' . date('d/m/Y', strtotime($datos['fecha'])) . ' a las ' . $datos['hora'] . '.'
         );
+    }
+
+    public function mis(Request $request)
+    {
+        if (!session()->has('paciente_id')) {
+            return redirect()->route('login')
+                ->withErrors(['correo' => 'Inicia sesión para ver tus citas.']);
+        }
+
+        $filtro = $request->query('estado', 'Todas');
+        if (!in_array($filtro, ['Todas', 'Programada', 'Atendida', 'Cancelada'], true)) {
+            $filtro = 'Todas';
+        }
+
+        $consulta = Cita::with(['servicio', 'odontologo'])
+            ->where('id_paciente', session('paciente_id'));
+
+        if ($filtro !== 'Todas') {
+            $consulta->where('estado', $filtro);
+        }
+
+        $citas = $consulta->orderBy('fecha', 'desc')->orderBy('hora', 'desc')->get();
+
+        $tieneCitas = Cita::where('id_paciente', session('paciente_id'))->exists();
+
+        $detalle = null;
+        if ($request->query('ver')) {
+            $detalle = Cita::with(['servicio', 'odontologo'])
+                ->where('id_cita', $request->query('ver'))
+                ->where('id_paciente', session('paciente_id'))
+                ->first();
+        }
+
+        return view('citas.mis', [
+            'citas'      => $citas,
+            'filtro'     => $filtro,
+            'tieneCitas' => $tieneCitas,
+            'detalle'    => $detalle,
+        ]);
+    }
+
+    public function cancelar(Request $request, $id)
+    {
+        if (!session()->has('paciente_id')) {
+            return redirect()->route('login');
+        }
+
+        $request->validate(
+            ['motivo' => 'required|max:150'],
+            ['motivo.required' => 'Indica el motivo de la cancelación.']
+        );
+
+        $cita = Cita::where('id_cita', $id)
+            ->where('id_paciente', session('paciente_id'))
+            ->firstOrFail();
+
+        if (!$cita->puedeCancelarse()) {
+            return redirect()->route('citas.mis')->withErrors([
+                'cancelar' => 'Solo puedes cancelar citas programadas con al menos 24 horas de anticipación.',
+            ]);
+        }
+
+        $cita->update([
+            'estado'             => 'Cancelada',
+            'motivo_cancelacion' => $request->motivo,
+        ]);
+
+        return redirect()->route('citas.mis')->with('exito', 'La cita fue cancelada correctamente.');
     }
 }

@@ -29,6 +29,9 @@
                         <a class="nav-link" href="{{ route('citas.agendar') }}">Agendar cita</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="{{ route('citas.mis') }}">Mis citas</a>
+                    </li>
+                    <li class="nav-item">
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <button class="btn btn-link nav-link">Cerrar sesión</button>

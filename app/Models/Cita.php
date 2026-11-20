@@ -29,4 +29,12 @@ class Cita extends Model
     {
         return $this->belongsTo(Servicio::class, 'id_servicio', 'id_servicio');
     }
+    public function puedeCancelarse(): bool
+    {
+        if ($this->estado !== 'Programada') {
+            return false;
+        }
+        $inicioCita = strtotime($this->fecha . ' ' . $this->hora);
+        return ($inicioCita - time()) >= 24 * 60 * 60;
+    }
 }

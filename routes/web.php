@@ -17,3 +17,6 @@ Route::post('/logout', [AuthControlador::class, 'logout'])->name('logout');
 
 Route::get('/citas/agendar', [CitaControlador::class, 'agendar'])->name('citas.agendar');
 Route::post('/citas', [CitaControlador::class, 'confirmar'])->name('citas.confirmar');
+
+Route::get('/citas', [CitaControlador::class, 'mis'])->name('citas.mis');                      // CUS07
+Route::post('/citas/{id}/cancelar', [CitaControlador::class, 'cancelar'])->name('citas.cancelar'); // CUS06
