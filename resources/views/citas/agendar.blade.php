@@ -20,10 +20,10 @@
         <div class="row g-3 align-items-end">
             <div class="col-12 col-md-5">
                 <label class="form-label">1. Especialidad</label>
-                <select name="especialidad" class="form-select" required>
+                <select name="servicio" class="form-select" required>
                     <option value="">Selecciona...</option>
-                    @foreach ($especialidades as $item)
-                        <option value="{{ $item }}" @selected($item === $especialidad)>{{ $item }}</option>
+                    @foreach ($servicios as $item)
+                        <option value="{{ $item->id_servicio }}" @selected($servicio && $item->id_servicio == $servicio->id_servicio)>{{ $item->nombre }}</option>
                     @endforeach
                 </select>
             </div>
@@ -39,7 +39,7 @@
 
         @if ($odontologo)
             <p class="mb-0 mt-3 text-muted">
-                Odontólogo: <strong>{{ $odontologo['nombre'] }} · {{ $odontologo['especialidad'] }}</strong>
+                Odontólogo: <strong>{{ $odontologo->nombres }} · {{ $odontologo->especialidad }}</strong>
             </p>
         @endif
     </form>
@@ -47,7 +47,7 @@
     @if ($mostrarHorarios)
         <form method="POST" action="{{ route('citas.confirmar') }}">
             @csrf
-            <input type="hidden" name="especialidad" value="{{ $especialidad }}">
+            <input type="hidden" name="servicio" value="{{ $servicio->id_servicio }}">
             <input type="hidden" name="fecha" value="{{ $fecha }}">
 
             <div class="row g-4">
@@ -78,8 +78,8 @@
                     <div class="card card-body shadow-sm">
                         <h5>Resumen de la cita</h5>
                         <ul class="list-unstyled mb-3">
-                            <li><strong>Especialidad:</strong> {{ $especialidad }}</li>
-                            <li><strong>Odontólogo:</strong> {{ $odontologo['nombre'] }}</li>
+                            <li><strong>Especialidad:</strong> {{ $servicio->nombre }}</li>
+                            <li><strong>Odontólogo:</strong> {{ $odontologo->nombres }}</li>
                             <li><strong>Fecha:</strong> {{ date('d/m/Y', strtotime($fecha)) }}</li>
                             <li><strong>Hora:</strong> <span id="resumen-hora">Sin seleccionar</span></li>
                         </ul>

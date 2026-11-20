@@ -2,19 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Repositories\JsonRepositorio;
+use App\Models\Cita;
+use App\Models\OdontologoEspecialista;
+use App\Models\Servicio;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
 class CitaControlador extends Controller
 {
-    private JsonRepositorio $citas;
-
-    public function __construct()
-    {
-        $this->citas = new JsonRepositorio('citas.json');
-    }
-
     public function agendar(Request $request)
     {
         if (!session()->has('paciente_id')) {
@@ -22,12 +17,11 @@ class CitaControlador extends Controller
                 ->withErrors(['correo' => 'Inicia sesión para agendar una cita.']);
         }
 
-        $especialidades = array_column(config('clinica.servicios'), 'nombre');
-        $especialidad = $request->query('especialidad');
         $fecha = $request->query('fecha');
 
-        $odontologo = in_array($especialidad, $especialidades, true)
-            ? $this->odontologoDe($especialidad)
+        $servicio = Servicio::find($request->query('servicio'));
+        $odontologo = $servicio
+            ? OdontologoEspecialista::where('especialidad', $servicio->especialidad)->first()
             : null;
 
         $fechaValida = $fecha
@@ -36,10 +30,17 @@ class CitaControlador extends Controller
 
         $horarios = [];
         if ($odontologo && $fechaValida) {
+            $ocupadas = Cita::where('id_odontologo', $odontologo->id_odontologo)
+                ->where('fecha', $fecha)
+                ->where('estado', '!=', 'Cancelada')
+                ->pluck('hora')
+                ->map(fn ($h) => substr($h, 0, 5))
+                ->all();
+
             foreach (config('clinica.horarios') as $hora) {
                 $horarios[] = [
-                    'hora'     => $hora,
-                    'ocupado'  => $this->horarioOcupado($odontologo['id'], $fecha, $hora),
+                    'hora'    => $hora,
+                    'ocupado' => in_array($hora, $ocupadas, true),
                 ];
             }
         }
@@ -47,8 +48,8 @@ class CitaControlador extends Controller
         $hayDisponibles = in_array(false, array_column($horarios, 'ocupado'), true);
 
         return view('citas.agendar', [
-            'especialidades'  => $especialidades,
-            'especialidad'    => $especialidad,
+            'servicios'       => Servicio::all(),
+            'servicio'        => $servicio,
             'fecha'           => $fecha,
             'odontologo'      => $odontologo,
             'horarios'        => $horarios,
@@ -63,67 +64,52 @@ class CitaControlador extends Controller
             return redirect()->route('login');
         }
 
-        $especialidades = array_column(config('clinica.servicios'), 'nombre');
-
         $datos = $request->validate([
-            'especialidad' => ['required', Rule::in($especialidades)],
-            'fecha'        => 'required|date_format:Y-m-d|after:today',
-            'hora'         => ['required', Rule::in(config('clinica.horarios'))],
+            'servicio' => 'required|exists:servicio,id_servicio',
+            'fecha'    => 'required|date_format:Y-m-d|after:today',
+            'hora'     => ['required', Rule::in(config('clinica.horarios'))],
         ], [
-            'hora.required' => 'Selecciona un horario.',
-            'fecha.after'   => 'Elige una fecha a partir de mañana.',
+            'servicio.required' => 'Selecciona un servicio.',
+            'hora.required'     => 'Selecciona un horario.',
+            'fecha.after'       => 'Elige una fecha a partir de mañana.',
         ]);
 
-        $odontologo = $this->odontologoDe($datos['especialidad']);
+        $servicio = Servicio::findOrFail($datos['servicio']);
+        $odontologo = OdontologoEspecialista::where('especialidad', $servicio->especialidad)->firstOrFail();
+        $hora = $datos['hora'] . ':00';
+        $cita = Cita::where('id_odontologo', $odontologo->id_odontologo)
+            ->where('fecha', $datos['fecha'])
+            ->where('hora', $hora)
+            ->first();
 
-        if ($this->horarioOcupado($odontologo['id'], $datos['fecha'], $datos['hora'])) {
+        if ($cita && $cita->estado !== 'Cancelada') {
             return redirect()
-                ->route('citas.agendar', [
-                    'especialidad' => $datos['especialidad'],
-                    'fecha'        => $datos['fecha'],
-                ])
+                ->route('citas.agendar', ['servicio' => $servicio->id_servicio, 'fecha' => $datos['fecha']])
                 ->withErrors([
                     'hora' => 'El horario de las ' . $datos['hora'] . ' ya no está disponible. Elige otro horario.',
                 ]);
         }
 
-        $this->citas->crear([
-            'paciente_id'        => session('paciente_id'),
-            'odontologo_id'      => $odontologo['id'],
-            'especialidad'       => $datos['especialidad'],
+        $campos = [
+            'id_paciente'        => session('paciente_id'),
+            'id_odontologo'      => $odontologo->id_odontologo,
+            'id_servicio'        => $servicio->id_servicio,
             'fecha'              => $datos['fecha'],
-            'hora'               => $datos['hora'],
+            'hora'               => $hora,
             'estado'             => 'Programada',
             'motivo_cancelacion' => null,
-        ]);
+        ];
+
+        if ($cita) {
+            $cita->update($campos);
+        } else {
+            Cita::create($campos);
+        }
 
         return redirect()->route('citas.agendar')->with(
             'exito',
-            'Cita confirmada: ' . $datos['especialidad'] . ' con ' . $odontologo['nombre'] .
+            'Cita confirmada: ' . $servicio->nombre . ' con ' . $odontologo->nombres .
             ', el ' . date('d/m/Y', strtotime($datos['fecha'])) . ' a las ' . $datos['hora'] . '.'
         );
-    }
-
-    private function odontologoDe(string $especialidad): ?array
-    {
-        foreach (config('clinica.odontologos') as $odontologo) {
-            if ($odontologo['especialidad'] === $especialidad) {
-                return $odontologo;
-            }
-        }
-        return null;
-    }
-
-    private function horarioOcupado(int $odontologoId, string $fecha, string $hora): bool
-    {
-        foreach ($this->citas->todos() as $cita) {
-            if ($cita['odontologo_id'] == $odontologoId
-                && $cita['fecha'] === $fecha
-                && $cita['hora'] === $hora
-                && $cita['estado'] !== 'Cancelada') {
-                return true;
-            }
-        }
-        return false;
     }
 }

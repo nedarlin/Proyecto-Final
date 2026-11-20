@@ -27,8 +27,8 @@
             @foreach ($servicios as $servicio)
                 <div class="col-md-6 col-lg-3">
                     <div class="servicio h-100">
-                        <h5>{{ $servicio['nombre'] }}</h5>
-                        <p>{{ $servicio['descripcion'] }}</p>
+                        <h5>{{ $servicio->nombre }}</h5>
+                        <p>{{ $servicio->descripcion }}</p>
                     </div>
                 </div>
             @endforeach
