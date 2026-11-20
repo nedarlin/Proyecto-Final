@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Paciente;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use App\Models\OdontologoEspecialista;
 
 class AuthControlador extends Controller
 {
@@ -54,7 +55,7 @@ class AuthControlador extends Controller
         return view('auth.login');
     }
 
-    public function login(Request $request)
+        public function login(Request $request)
     {
         $request->validate([
             'correo' => 'required|email',
@@ -67,6 +68,8 @@ class AuthControlador extends Controller
 
         $paciente = Paciente::where('correo', $request->correo)->first();
 
+        $odontologo = $paciente ? null : OdontologoEspecialista::where('correo', $request->correo)->first();
+
         if ($paciente && Hash::check($request->clave, $paciente->contrasena_hash)) {
             $request->session()->regenerate();
             session([
@@ -75,6 +78,16 @@ class AuthControlador extends Controller
             ]);
             session()->forget(['intentos', 'bloqueado_hasta']);
             return redirect()->route('inicio');
+        }
+
+        if ($odontologo && Hash::check($request->clave, $odontologo->contrasena_hash)) {
+            $request->session()->regenerate();
+            session([
+                'odontologo_id'     => $odontologo->id_odontologo,
+                'odontologo_nombre' => $odontologo->nombres,
+            ]);
+            session()->forget(['intentos', 'bloqueado_hasta']);
+            return redirect()->route('agenda');
         }
 
         $intentos = session('intentos', 0) + 1;
