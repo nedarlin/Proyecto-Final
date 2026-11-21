@@ -74,10 +74,8 @@
                                         <button class="btn btn-sm btn-primary">Iniciar atención</button>
                                     </form>
                                 @elseif ($cita->estado === 'En atención')
-                                    <form method="POST" action="{{ route('agenda.avanzar', $cita->id_cita) }}">
-                                        @csrf
-                                        <button class="btn btn-sm btn-success">Finalizar atención</button>
-                                    </form>
+                                    <a href="{{ route('evaluaciones.crear', $cita->id_cita) }}"
+                                       class="btn btn-sm btn-success">Registrar evaluación</a>
                                 @else
                                     <span class="text-muted">—</span>
                                 @endif

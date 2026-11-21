@@ -16,4 +16,8 @@ class HistoriaClinica extends Model
     {
         return $this->belongsTo(Paciente::class, 'id_paciente', 'id_paciente');
     }
+    public function evaluaciones()
+    {
+        return $this->hasMany(EvaluacionDiagnostico::class, 'id_historia', 'id_historia');
+    }
 }

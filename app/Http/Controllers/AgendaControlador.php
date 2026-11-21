@@ -41,12 +41,11 @@ class AgendaControlador extends Controller
             ->firstOrFail();
 
         $siguiente = [
-            'Programada'  => 'En atención',
-            'En atención' => 'Atendida',
+            'Programada' => 'En atención',
         ];
 
         if (!isset($siguiente[$cita->estado])) {
-            return back()->withErrors(['estado' => 'Esta cita ya no puede cambiar de estado.']);
+            return back()->withErrors(['estado' => 'Esta cita no se puede iniciar desde aquí.']);
         }
 
         $cita->update(['estado' => $siguiente[$cita->estado]]);

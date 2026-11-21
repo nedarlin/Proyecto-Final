@@ -37,4 +37,8 @@ class Cita extends Model
         $inicioCita = strtotime($this->fecha . ' ' . $this->hora);
         return ($inicioCita - time()) >= 24 * 60 * 60;
     }
+    public function evaluacion()
+    {
+        return $this->hasOne(EvaluacionDiagnostico::class, 'id_cita', 'id_cita');
+    }
 }

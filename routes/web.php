@@ -5,6 +5,7 @@ use App\Http\Controllers\SitioControlador;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CitaControlador;
 use App\Http\Controllers\AgendaControlador;
+use App\Http\Controllers\EvaluacionControlador;
 
 Route::get('/', [SitioControlador::class, 'inicio'])->name('inicio');
 
@@ -24,3 +25,6 @@ Route::post('/citas/{id}/cancelar', [CitaControlador::class, 'cancelar'])->name(
 
 Route::get('/agenda', [AgendaControlador::class, 'index'])->name('agenda');
 Route::post('/agenda/{id}/avanzar', [AgendaControlador::class, 'avanzar'])->name('agenda.avanzar');
+
+Route::get('/evaluaciones/crear/{id}', [EvaluacionControlador::class, 'crear'])->name('evaluaciones.crear');
+Route::post('/evaluaciones/{id}', [EvaluacionControlador::class, 'guardar'])->name('evaluaciones.guardar');
