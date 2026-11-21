@@ -12,3 +12,34 @@ body { color: #2b2f33; }
 @media (min-width: 768px) {
     .hero { padding: 6rem 0 5rem; }
 }
+
+.servicio-img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
+    background: #f4f9fd;
+    border-radius: .5rem;
+    margin-bottom: 1rem;
+}
+
+.paso-icono {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: #e8f3fb;
+    color: #0d6efd;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75rem;
+    margin-bottom: .75rem;
+}
+
+body { background-color: #f7fcff; }
+
+.paso-icono {
+    background: #fff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, .08);
+}
+
+.franja { background: #e3eef8; padding: 3rem 0; }

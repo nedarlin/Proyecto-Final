@@ -30,6 +30,9 @@
             @foreach ($servicios as $servicio)
                 <div class="col-md-6 col-lg-3">
                     <div class="servicio h-100">
+                        @if ($servicio->imagen())
+                            <img src="{{ $servicio->imagen() }}" alt="{{ $servicio->nombre }}" class="servicio-img" loading="lazy">
+                        @endif
                         <h5>{{ $servicio->nombre }}</h5>
                         <p>{{ $servicio->descripcion }}</p>
                         <a href="{{ route('catalogo.servicio', $servicio->id_servicio) }}" class="small">Ver detalle</a>
@@ -45,17 +48,17 @@
         <h2 class="titulo-seccion text-center">Reserva en 3 pasos</h2>
         <div class="row text-center g-4">
             <div class="col-md-4">
-                <div class="paso-numero">1</div>
+                <div class="paso-icono"><i class="bi bi-person-plus" aria-hidden="true"></i></div>
                 <h5>Crea tu cuenta</h5>
                 <p class="text-muted">Registrate con tus datos personales.</p>
             </div>
             <div class="col-md-4">
-                <div class="paso-numero">2</div>
+                <div class="paso-icono"><i class="bi bi-calendar-check" aria-hidden="true"></i></div>
                 <h5>Elige tu horario</h5>
                 <p class="text-muted">Selecciona especialidad, fecha y hora disponible.</p>
             </div>
             <div class="col-md-4">
-                <div class="paso-numero">3</div>
+                <div class="paso-icono"><i class="bi bi-emoji-smile" aria-hidden="true"></i></div>
                 <h5>Asiste a tu cita</h5>
                 <p class="text-muted">Te atendemos en el horario que reservaste.</p>
             </div>

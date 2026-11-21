@@ -14,6 +14,9 @@
             @foreach ($servicios as $servicio)
                 <div class="col-md-6 col-lg-3">
                     <div class="servicio h-100 d-flex flex-column">
+                        @if ($servicio->imagen())
+                            <img src="{{ $servicio->imagen() }}" alt="{{ $servicio->nombre }}" class="servicio-img" loading="lazy">
+                        @endif
                         <h5>{{ $servicio->nombre }}</h5>
                         <p class="flex-grow-1">{{ $servicio->descripcion }}</p>
                         <a href="{{ route('catalogo.servicio', $servicio->id_servicio) }}"

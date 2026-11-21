@@ -16,4 +16,10 @@ class Servicio extends Model
     {
         return $this->hasMany(Cita::class, 'id_servicio', 'id_servicio');
     }
+    public function imagen()
+    {
+        $archivo = config('clinica.imagenes.' . $this->nombre);
+
+        return $archivo ? asset('img/servicios/' . $archivo) : null;
+    }
 }

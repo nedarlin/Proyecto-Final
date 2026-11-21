@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Odonto Sonrisas</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <link href="{{ asset('css/styles.css') }}" rel="stylesheet">
 </head>
 <body class="d-flex flex-column min-vh-100">
-    <nav class="navbar navbar-expand-md navbar-light bg-white border-bottom">
+    <nav class="navbar navbar-expand-md navbar-light bg-white border-bottom shadow-sm">
     <div class="container">
         <a class="navbar-brand fw-semibold" href="{{ route('inicio') }}">Odonto Sonrisas</a>
 
@@ -70,7 +71,7 @@
         @yield('content')
     </main>
 
-    <footer class="border-top text-center text-muted py-3">
+    <footer class="bg-white border-top text-center text-muted py-3">
         <small>&copy; {{ date('Y') }} Odonto Sonrisas. Todos los derechos reservados.</small>
     </footer>
 
