@@ -12,6 +12,9 @@
             @if (session()->has('paciente_id'))
                 <a href="{{ route('citas.agendar') }}" class="btn btn-primary px-4">Agendar cita</a>
                 <a href="#servicios" class="btn btn-outline-secondary px-4">Ver servicios</a>
+            @elseif (session()->has('odontologo_id'))
+                <a href="{{ route('agenda') }}" class="btn btn-primary px-4">Ir a mi agenda</a>
+                <a href="#servicios" class="btn btn-outline-secondary px-4">Ver servicios</a>
             @else
                 <a href="{{ route('login') }}" class="btn btn-primary px-4">Reservar cita</a>
                 <a href="#servicios" class="btn btn-outline-secondary px-4">Ver servicios</a>
@@ -29,6 +32,7 @@
                     <div class="servicio h-100">
                         <h5>{{ $servicio->nombre }}</h5>
                         <p>{{ $servicio->descripcion }}</p>
+                        <a href="{{ route('catalogo.servicio', $servicio->id_servicio) }}" class="small">Ver detalle</a>
                     </div>
                 </div>
             @endforeach
@@ -59,7 +63,7 @@
     </div>
 </section>
 
-@if (!session()->has('paciente_id'))
+@if (!session()->has('paciente_id') && !session()->has('odontologo_id'))
 <section class="franja text-center">
     <div class="container">
         <h3 class="fw-light mb-3">¿Listo para tu primera evaluacion?</h3>

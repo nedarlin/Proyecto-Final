@@ -21,7 +21,7 @@
         <div class="collapse navbar-collapse" id="menuPrincipal">
             <ul class="navbar-nav ms-auto align-items-md-center gap-md-2">
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('inicio') }}#servicios">Servicios</a>
+                    <a class="nav-link" href="{{ route('catalogo') }}">Catálogo</a>
                 </li>
 
                 @if (session()->has('paciente_id'))

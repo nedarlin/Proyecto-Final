@@ -35,3 +35,6 @@ Route::get('/pagos/{id}', [PagoControlador::class, 'crear'])->name('pagos.crear'
 Route::post('/pagos/{id}', [PagoControlador::class, 'guardar'])->name('pagos.guardar');
 Route::get('/pagos/{id}/comprobante', [PagoControlador::class, 'comprobante'])->name('pagos.comprobante');
 
+Route::get('/catalogo', [SitioControlador::class, 'catalogo'])->name('catalogo');
+Route::get('/catalogo/{id}', [SitioControlador::class, 'servicio'])->name('catalogo.servicio');
+
