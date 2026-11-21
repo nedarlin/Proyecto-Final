@@ -7,6 +7,7 @@ use App\Http\Controllers\CitaControlador;
 use App\Http\Controllers\AgendaControlador;
 use App\Http\Controllers\EvaluacionControlador;
 use App\Http\Controllers\PagoControlador;
+use App\Http\Controllers\HistoriaControlador;
 
 Route::get('/', [SitioControlador::class, 'inicio'])->name('inicio');
 
@@ -37,4 +38,9 @@ Route::get('/pagos/{id}/comprobante', [PagoControlador::class, 'comprobante'])->
 
 Route::get('/catalogo', [SitioControlador::class, 'catalogo'])->name('catalogo');
 Route::get('/catalogo/{id}', [SitioControlador::class, 'servicio'])->name('catalogo.servicio');
+
+Route::get('/historias', [HistoriaControlador::class, 'index'])->name('historias.index');
+Route::get('/historias/{id}', [HistoriaControlador::class, 'ver'])->name('historias.ver');
+Route::get('/historias/{id}/editar', [HistoriaControlador::class, 'editar'])->name('historias.editar');
+Route::post('/historias/{id}', [HistoriaControlador::class, 'guardar'])->name('historias.guardar');
 

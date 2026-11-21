@@ -45,6 +45,9 @@
                         <a class="nav-link" href="{{ route('pagos.index') }}">Pagos</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="{{ route('historias.index') }}">Historias clínicas</a>
+                    </li>
+                    <li class="nav-item">
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <button class="btn btn-link nav-link">Cerrar sesión</button>
