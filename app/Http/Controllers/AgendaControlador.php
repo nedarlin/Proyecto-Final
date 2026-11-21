@@ -19,7 +19,7 @@ class AgendaControlador extends Controller
             $fecha = date('Y-m-d');
         }
 
-        $citas = Cita::with(['paciente', 'servicio'])
+        $citas = Cita::with(['paciente', 'servicio', 'pago'])
             ->where('id_odontologo', session('odontologo_id'))
             ->where('fecha', $fecha)
             ->orderBy('hora')

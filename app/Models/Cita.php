@@ -41,4 +41,8 @@ class Cita extends Model
     {
         return $this->hasOne(EvaluacionDiagnostico::class, 'id_cita', 'id_cita');
     }
+    public function pago()
+    {
+        return $this->hasOne(Pago::class, 'id_cita', 'id_cita');
+    }
 }

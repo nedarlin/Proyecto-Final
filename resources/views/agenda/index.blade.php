@@ -76,6 +76,14 @@
                                 @elseif ($cita->estado === 'En atención')
                                     <a href="{{ route('evaluaciones.crear', $cita->id_cita) }}"
                                        class="btn btn-sm btn-success">Registrar evaluación</a>
+                                @elseif ($cita->estado === 'Atendida')
+                                    @if ($cita->pago)
+                                        <a href="{{ route('pagos.comprobante', $cita->id_cita) }}"
+                                           class="btn btn-sm btn-outline-success">Comprobante</a>
+                                    @else
+                                        <a href="{{ route('pagos.crear', $cita->id_cita) }}"
+                                           class="btn btn-sm btn-primary">Cobrar</a>
+                                    @endif
                                 @else
                                     <span class="text-muted">—</span>
                                 @endif
