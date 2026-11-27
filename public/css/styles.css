@@ -43,3 +43,7 @@ body { background-color: #f7fcff; }
 }
 
 .franja { background: #e3eef8; padding: 3rem 0; }
+
+.form-check-input:not(:checked) {
+    border: 1.5px solid #212529;
+}

@@ -3,7 +3,7 @@
 @section('content')
 <div class="container py-4">
     <h2 class="text-center mb-4">Registrar pago del servicio</h2>
-}
+
     @error('pago')
         <div class="alert alert-danger">{{ $message }}</div>
     @enderror
@@ -21,7 +21,7 @@
                 </ul>
                 <div class="d-flex justify-content-between border-top pt-2">
                     <strong>Total a pagar</strong>
-                    <strong>S/ {{ number_format($total, 2) }}</strong>
+                    <strong id="total-pagar">S/ {{ number_format((float) old('precio', 0), 2) }}</strong>
                 </div>
             </div>
         </div>
@@ -42,10 +42,10 @@
                 @error('metodo_pago') <div class="text-danger small mb-2">{{ $message }}</div> @enderror
 
                 <div class="mb-3 mt-3">
-                    <label class="form-label">Monto recibido (S/) *</label>
-                    <input type="number" step="0.01" name="monto_recibido" value="{{ old('monto_recibido') }}"
-                           class="form-control @error('monto_recibido') is-invalid @enderror">
-                    @error('monto_recibido') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    <label class="form-label">Precio de la consulta (S/) *</label>
+                    <input type="number" step="0.01" min="1" name="precio" id="precio" value="{{ old('precio') }}"
+                           class="form-control @error('precio') is-invalid @enderror">
+                    @error('precio') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
 
                 <div class="form-check mb-3">
@@ -67,6 +67,13 @@
 </div>
 
 <script>
+    var precio = document.getElementById('precio');
+    var total = document.getElementById('total-pagar');
+    precio.addEventListener('input', function () {
+        var valor = parseFloat(precio.value);
+        total.textContent = 'S/ ' + (isNaN(valor) ? 0 : valor).toFixed(2);
+    });
+
     document.getElementById('form-pago').addEventListener('submit', function () {
         var boton = this.querySelector('button[type=submit]');
         boton.disabled = true;

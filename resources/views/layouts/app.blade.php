@@ -46,6 +46,9 @@
                         <a class="nav-link" href="{{ route('pagos.index') }}">Pagos</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="{{ route('pagos.historial') }}">Historial de pagos</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="{{ route('historias.index') }}">Historias clínicas</a>
                     </li>
                     <li class="nav-item">

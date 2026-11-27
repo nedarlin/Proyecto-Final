@@ -33,6 +33,7 @@ Route::get('/evaluaciones/crear/{id}', [EvaluacionControlador::class, 'crear'])-
 Route::post('/evaluaciones/{id}', [EvaluacionControlador::class, 'guardar'])->name('evaluaciones.guardar');
 
 Route::get('/pagos', [PagoControlador::class, 'index'])->name('pagos.index');
+Route::get('/pagos/historial', [PagoControlador::class, 'historial'])->name('pagos.historial');
 Route::get('/pagos/{id}', [PagoControlador::class, 'crear'])->name('pagos.crear');
 Route::post('/pagos/{id}', [PagoControlador::class, 'guardar'])->name('pagos.guardar');
 Route::get('/pagos/{id}/comprobante', [PagoControlador::class, 'comprobante'])->name('pagos.comprobante');
