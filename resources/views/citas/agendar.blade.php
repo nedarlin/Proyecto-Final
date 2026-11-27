@@ -37,9 +37,13 @@
             </div>
         </div>
 
-        @if ($odontologo)
+        @if ($servicio && $odontologos->isEmpty())
+            <div class="alert alert-warning mb-0 mt-3">
+                Por ahora no hay odontólogos disponibles para este servicio.
+            </div>
+        @elseif ($servicio)
             <p class="mb-0 mt-3 text-muted">
-                Odontólogo: <strong>{{ $odontologo->nombres }} · {{ $odontologo->especialidad }}</strong>
+                Odontólogos de {{ $servicio->nombre }}: <strong>{{ $odontologos->pluck('nombres')->join(', ') }}</strong>
             </p>
         @endif
     </form>
@@ -79,7 +83,7 @@
                         <h5>Resumen de la cita</h5>
                         <ul class="list-unstyled mb-3">
                             <li><strong>Especialidad:</strong> {{ $servicio->nombre }}</li>
-                            <li><strong>Odontólogo:</strong> {{ $odontologo->nombres }}</li>
+                            <li><strong>Odontólogo:</strong> Se asigna según disponibilidad</li>
                             <li><strong>Fecha:</strong> {{ date('d/m/Y', strtotime($fecha)) }}</li>
                             <li><strong>Hora:</strong> <span id="resumen-hora">Sin seleccionar</span></li>
                         </ul>

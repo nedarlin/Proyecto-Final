@@ -8,6 +8,7 @@ use App\Http\Controllers\AgendaControlador;
 use App\Http\Controllers\EvaluacionControlador;
 use App\Http\Controllers\PagoControlador;
 use App\Http\Controllers\HistoriaControlador;
+use App\Http\Controllers\AdminOdontologoControlador;
 
 Route::get('/', [SitioControlador::class, 'inicio'])->name('inicio');
 
@@ -44,3 +45,9 @@ Route::get('/historias/{id}', [HistoriaControlador::class, 'ver'])->name('histor
 Route::get('/historias/{id}/editar', [HistoriaControlador::class, 'editar'])->name('historias.editar');
 Route::post('/historias/{id}', [HistoriaControlador::class, 'guardar'])->name('historias.guardar');
 
+Route::get('/admin/odontologos', [AdminOdontologoControlador::class, 'index'])->name('admin.odontologos.index');
+Route::get('/admin/odontologos/crear', [AdminOdontologoControlador::class, 'crear'])->name('admin.odontologos.crear');
+Route::post('/admin/odontologos', [AdminOdontologoControlador::class, 'guardar'])->name('admin.odontologos.guardar');
+Route::get('/admin/odontologos/{id}/editar', [AdminOdontologoControlador::class, 'editar'])->name('admin.odontologos.editar');
+Route::post('/admin/odontologos/{id}', [AdminOdontologoControlador::class, 'actualizar'])->name('admin.odontologos.actualizar');
+Route::post('/admin/odontologos/{id}/eliminar', [AdminOdontologoControlador::class, 'eliminar'])->name('admin.odontologos.eliminar');

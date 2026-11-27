@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder
             ServicioSeeder::class,
             OdontologoEspecialistaSeeder::class,
             PacienteSeeder::class,
+            AdministradorSeeder::class,
         ]);
     }
 }

@@ -20,27 +20,28 @@ class CitaControlador extends Controller
         $fecha = $request->query('fecha');
 
         $servicio = Servicio::find($request->query('servicio'));
-        $odontologo = $servicio
-            ? OdontologoEspecialista::where('especialidad', $servicio->especialidad)->first()
-            : null;
+
+        $odontologos = $servicio
+            ? OdontologoEspecialista::where('especialidad', $servicio->especialidad)->get()
+            : collect();
 
         $fechaValida = $fecha
             && date('Y-m-d', strtotime($fecha)) === $fecha
             && $fecha > date('Y-m-d');
 
         $horarios = [];
-        if ($odontologo && $fechaValida) {
-            $ocupadas = Cita::where('id_odontologo', $odontologo->id_odontologo)
+        if ($odontologos->isNotEmpty() && $fechaValida) {
+            $ocupadasPorHora = Cita::whereIn('id_odontologo', $odontologos->pluck('id_odontologo'))
                 ->where('fecha', $fecha)
                 ->where('estado', '!=', 'Cancelada')
-                ->pluck('hora')
-                ->map(fn ($h) => substr($h, 0, 5))
-                ->all();
+                ->get()
+                ->groupBy(fn ($cita) => substr($cita->hora, 0, 5))
+                ->map(fn ($grupo) => $grupo->count());
 
             foreach (config('clinica.horarios') as $hora) {
                 $horarios[] = [
                     'hora'    => $hora,
-                    'ocupado' => in_array($hora, $ocupadas, true),
+                    'ocupado' => ($ocupadasPorHora[$hora] ?? 0) >= $odontologos->count(),
                 ];
             }
         }
@@ -51,10 +52,10 @@ class CitaControlador extends Controller
             'servicios'       => Servicio::all(),
             'servicio'        => $servicio,
             'fecha'           => $fecha,
-            'odontologo'      => $odontologo,
+            'odontologos'     => $odontologos,
             'horarios'        => $horarios,
             'hayDisponibles'  => $hayDisponibles,
-            'mostrarHorarios' => $odontologo && $fechaValida,
+            'mostrarHorarios' => $odontologos->isNotEmpty() && $fechaValida,
         ]);
     }
 
@@ -75,14 +76,32 @@ class CitaControlador extends Controller
         ]);
 
         $servicio = Servicio::findOrFail($datos['servicio']);
-        $odontologo = OdontologoEspecialista::where('especialidad', $servicio->especialidad)->firstOrFail();
-        $hora = $datos['hora'] . ':00';
-        $cita = Cita::where('id_odontologo', $odontologo->id_odontologo)
-            ->where('fecha', $datos['fecha'])
-            ->where('hora', $hora)
-            ->first();
+        $odontologos = OdontologoEspecialista::where('especialidad', $servicio->especialidad)->get();
 
-        if ($cita && $cita->estado !== 'Cancelada') {
+        if ($odontologos->isEmpty()) {
+            return redirect()->route('citas.agendar')->withErrors([
+                'servicio' => 'Por ahora no hay odontólogos disponibles para este servicio.',
+            ]);
+        }
+
+        $hora = $datos['hora'] . ':00';
+
+        $odontologo = null;
+        $cita = null;
+        foreach ($odontologos as $candidato) {
+            $existente = Cita::where('id_odontologo', $candidato->id_odontologo)
+                ->where('fecha', $datos['fecha'])
+                ->where('hora', $hora)
+                ->first();
+
+            if (!$existente || $existente->estado === 'Cancelada') {
+                $odontologo = $candidato;
+                $cita = $existente;
+                break;
+            }
+        }
+
+        if (!$odontologo) {
             return redirect()
                 ->route('citas.agendar', ['servicio' => $servicio->id_servicio, 'fecha' => $datos['fecha']])
                 ->withErrors([

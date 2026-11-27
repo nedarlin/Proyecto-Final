@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Administrador;
 use App\Models\Paciente;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -21,7 +22,7 @@ class AuthControlador extends Controller
             'apellidos' => 'required|regex:/^[\pL\s]+$/u|max:80',
             'dni'       => 'required|digits:8|unique:paciente,dni',
             'celular'   => 'required|digits:9',
-            'correo'    => 'required|email|max:100|unique:paciente,correo',
+            'correo'    => 'required|email|max:100|unique:paciente,correo|unique:odontologo_especialista,correo|unique:administrador,correo',
             'clave'     => 'required|min:8',
             'terminos'  => 'accepted',
         ], [
@@ -88,6 +89,20 @@ class AuthControlador extends Controller
             ]);
             session()->forget(['intentos', 'bloqueado_hasta']);
             return redirect()->route('agenda');
+        }
+
+        $administrador = ($paciente || $odontologo)
+            ? null
+            : Administrador::where('correo', $request->correo)->first();
+
+        if ($administrador && Hash::check($request->clave, $administrador->contrasena_hash)) {
+            $request->session()->regenerate();
+            session([
+                'admin_id'     => $administrador->id_administrador,
+                'admin_nombre' => $administrador->nombres,
+            ]);
+            session()->forget(['intentos', 'bloqueado_hasta']);
+            return redirect()->route('admin.odontologos.index');
         }
 
         $intentos = session('intentos', 0) + 1;

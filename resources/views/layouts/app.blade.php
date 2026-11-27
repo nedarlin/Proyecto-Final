@@ -54,6 +54,16 @@
                             <button class="btn btn-link nav-link">Cerrar sesión</button>
                         </form>
                     </li>
+                @elseif (session()->has('admin_id'))
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('admin.odontologos.index') }}">Odontólogos</a>
+                    </li>
+                    <li class="nav-item">
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button class="btn btn-link nav-link">Cerrar sesión</button>
+                        </form>
+                    </li>
                 @else
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('login') }}">Iniciar sesión</a>
